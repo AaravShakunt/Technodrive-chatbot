@@ -13,29 +13,53 @@ class TransactionFetcher:
         except psycopg2.Error as e:
             print("Error:", e)
 
-    def fetch_transactions_by_user(self, customer_id, first_name, last_name):
-        query = "SELECT transactions FROM transactions WHERE customer_id = %s AND first_name = %s AND last_name = %s;"
+    def fetch_transactions_by_user(self, customer_id, name):
+        query = "SELECT transactions FROM transactions WHERE patient_id = %s AND doctor_name = %s;"
         with self.conn.cursor() as cursor:
-            cursor.execute(query, (customer_id, first_name, last_name))
+            cursor.execute(query, (customer_id, name))
             result = cursor.fetchone()
             if result:
                 transactions = result[0]
                 return transactions
             else:
                 return None
+    
+    
+    def authenticate_doctor(self, id, doctor_name):
+        try:
+
+            
+            cursor = self.conn.cursor()
+            
+            query = "SELECT * FROM Appointments WHERE patient_id = %s AND doctor_name = %s"
+            cursor.execute(query, (id, doctor_name))
+            appointments = cursor.fetchall()
+            
+            cursor.close()
+            self.conn.close()
+            
+            if len(appointments) == 0:
+                return None
+            else:
+                return appointments
+            
+        except (Exception, psycopg2.Error) as error:
+            print("Error while connecting to PostgreSQL:", error)
+
+
 
     def close_connection(self):
         if self.conn:
             self.conn.close()
             print("Database connection closed.")
 
-    def process_request(self, customer_id, first_name, last_name):
+    def process_request(self, customer_id, name):
         
 
-        transactions = self.fetch_transactions_by_user(customer_id, first_name, last_name)
+        transactions = self.fetch_transactions_by_user(customer_id, name)
 
         if transactions:
-            print(f"Transactions for {first_name} {last_name}:")
+            print(f"Transactions for {name} :")
             for transaction in transactions:
                 print(transaction)
             return 1

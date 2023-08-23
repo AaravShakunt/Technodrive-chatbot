@@ -6,7 +6,7 @@ class InventoryFetcher:
     def __init__(self, db_params):
         self.db_params = db_params
         self.conn = None
-        self.connect()  # Establish the databasx        e connection in the constructor
+        self.connect()  # Establish the database connection in the constructor
 
     def connect(self):
         try:

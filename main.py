@@ -16,17 +16,6 @@ from dbtransactions import TransactionFetcher
 from dbinventory import InventoryFetcher
 import keys
 
-# Company logo image path
-logo_image_path = "walmart-logo.png"
-
-# Display the logo image
-st.image(logo_image_path)
-
-# Text content on the right
-st.title("Welcome to Walmart")
-st.write("This is a Streamlit app with the Walmart logo at the top left.")
-
-
 
 os.environ['OPENAI_API_KEY']=keys.OPENAI_KEY
 st.subheader("Chatbot")
@@ -129,8 +118,8 @@ if selected == "General":
                 if i < len(st.session_state['requests']):
                     message(st.session_state["requests"][i], is_user=True,key=str(i)+ '_user')
 
-def show_chat(customer_id, first_name, last_name, transaction_fetcher):
-    context2 = transaction_fetcher.fetch_transactions_by_user(customer_id, first_name, last_name)
+def show_chat(customer_id, name, context2):
+    # context2 =  transaction_fetcher.authenticate_doctor(customer_id, name)
     print(context2)
     
     # Display the chat interface here
@@ -229,7 +218,7 @@ def show_chat(customer_id, first_name, last_name, transaction_fetcher):
     
 if selected == "User Specific":
     db_params = {
-        'dbname': 'Converge',
+        'dbname': 'appointments',
         'user': 'postgres',
         'password': 'password',
         'host': 'localhost'
@@ -240,8 +229,8 @@ if selected == "User Specific":
     st.title("User Authentication")
 
     customer_id = st.text_input("Enter customer ID:")
-    first_name = st.text_input("Enter first name:")
-    last_name = st.text_input("Enter last name:")
+    name = st.text_input("Enter name:")
+    # last_name = st.text_input("Enter last name:")
     submit_button = st.button("Authenticate")
     # Initialize session_state if it doesn't exist
     if 'authenticated' not in st.session_state:
@@ -249,12 +238,13 @@ if selected == "User Specific":
 
     if submit_button:
         # Perform authentication logic here
-        authenticated = transaction_fetcher.process_request(customer_id, first_name, last_name)
+        # authenticated = transaction_fetcher.authenticate_doctor(customer_id, name)
+        authenticated = transaction_fetcher.authenticate_doctor(customer_id, name)
         st.session_state.authenticated = authenticated
 
     if st.session_state.authenticated:
         st.success("Authentication successful! You can now access the chat.")
-        show_chat(customer_id, first_name, last_name, transaction_fetcher)
+        show_chat(customer_id, name, st.session_state.authenticated)
 
 
 
