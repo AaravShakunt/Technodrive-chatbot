@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Result</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Result</h1>
+        <div class="card">
+            <div class="card-body">
+                <p class="font-weight-bold">Prediction: {{ y_pred }}</p>
+                <h3 class="mt-4">Explanation:</h3>
+                <p>The patient's values for:</p>
+                <ul class="list-group">
+                    {% for item in explanation_items %}
+                    <li class="list-group-item">{{ item }}</li>
+                    {% endfor %}
+                </ul>
+                <!-- Display the last line separately -->
+                <p class="font-weight-bold">{{ last_line }}</p>
+                <p class="mt-4 text-center">
+                    <a href="/" class="btn btn-primary">Detect again</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
